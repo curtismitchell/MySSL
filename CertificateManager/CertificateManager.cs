@@ -14,11 +14,17 @@ namespace CertificateManager
 {
     public class CertificateManager
     {
+        const string SignatureAlgorithm = "SHA1WithRSAEncryption";
+        const int BytesInKeyStrength = 2048;
+
+        /// <summary>
+        /// Creates a certficate that is trusted by the specified authority
+        /// </summary>
+        /// <param name="authority">Name of the authority that approves the certificate</param>
+        /// <returns>X509Certificate2</returns>
         public static X509Certificate2 Create(string authority)
         {
-            var signatureAlgorithm = "SHA1WithRSAEncryption";
-            int bytesInKeyStrength = 2048;
-            var keys = CreateKeyPair(bytesInKeyStrength);
+            var keys = CreateKeyPair(BytesInKeyStrength);
 
             var certGen = new X509V3CertificateGenerator();
             var dnName = new X509Name(authority);
@@ -29,7 +35,7 @@ namespace CertificateManager
             certGen.SetNotAfter(DateTime.Today.AddYears(10));
             certGen.SetSubjectDN(dnName);
             certGen.SetPublicKey(keys.Public);
-            certGen.SetSignatureAlgorithm(signatureAlgorithm);
+            certGen.SetSignatureAlgorithm(SignatureAlgorithm);
 
             return new X509Certificate2(certGen.Generate(keys.Private).GetEncoded());
         }
