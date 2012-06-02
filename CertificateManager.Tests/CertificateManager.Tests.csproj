@@ -47,6 +47,7 @@
       <Link>CommonAssemblyInfo.cs</Link>
     </Compile>
     <Compile Include="BaseSpec.cs" />
+    <Compile Include="TestAuthority.cs" />
     <Compile Include="TestCertificateCreation.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

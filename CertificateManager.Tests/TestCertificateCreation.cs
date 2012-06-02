@@ -7,45 +7,16 @@ using NUnit.Framework;
 
 namespace CertificateManager.Tests
 {
-    public class TestCertificateCreation : BaseSpec
+    [TestFixture]
+    public class TestCertificateCreation
     {
-
         [Test]
         public void CreateACertificateIssuedByAGivenAuthority()
         {
             var authority = "CN=LexisNexis Practice Management Authority";
-            var cert = CertificateManager.Create(authority);
+            var config = new CertificateConfiguration(authority);
+            var cert = config.GenerateCertificate();
             Assert.That(cert != null);
-        }
-
-        [Test]
-        public void ShouldThrowAnExceptionIfAuthorityNameIsInvalid()
-        {
-            var authority = "LexisNexis Practice Management Authority";
-            Assert.Throws<ArgumentException>(() =>
-            {
-                var cert = CertificateManager.Create(authority);
-            });
-        }
-
-        public override void BeforeEachSpec()
-        {
-
-        }
-
-        public override void AfterEachSpec()
-        {
-
-        }
-
-        public override void BeforeAllSpecs()
-        {
-
-        }
-
-        public override void AfterAllSpecs()
-        {
-
         }
     }
 }
