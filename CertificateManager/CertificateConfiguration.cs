@@ -12,16 +12,17 @@ using Org.BouncyCastle.X509;
 
 namespace CertificateManager
 {
-
     public class CertificateConfiguration
     {
         const string SignatureAlgorithm = "SHA1WithRSAEncryption";
         const int BytesInKeyStrength = 2048;
-        private string authority;
+        private Authority authority;
 
-        public CertificateConfiguration(string authority)
+        public CertificateConfiguration(Authority authority)
         {
             this.authority = authority;
+            this.EffectiveDate = DateTime.Today;
+            this.ExpirationDate = new DateTime(2039, 12, 31);
         }
 
         /// <summary>
@@ -34,7 +35,7 @@ namespace CertificateManager
             var keys = CreateKeyPair(BytesInKeyStrength);
 
             var certGen = new X509V3CertificateGenerator();
-            var dnName = new X509Name(this.authority);
+            var dnName = new X509Name(this.authority.CommonName);
 
             certGen.SetSerialNumber(BigInteger.ValueOf(1));
             certGen.SetIssuerDN(dnName);
@@ -59,5 +60,8 @@ namespace CertificateManager
             var keys = keygen.GenerateKeyPair();
             return keys;
         }
+
+        public DateTime EffectiveDate { get; set; }
+        public DateTime ExpirationDate { get; set; }
     }
 }
