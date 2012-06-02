@@ -17,11 +17,11 @@ namespace CertificateManager
         const string SignatureAlgorithm = "SHA1WithRSAEncryption";
         const int BytesInKeyStrength = 2048;
         private Authority authority;
+        private DateTime effectiveDate = DateTime.Today;
 
         public CertificateConfiguration(Authority authority)
         {
             this.authority = authority;
-            this.EffectiveDate = DateTime.Today;
             this.ExpirationDate = new DateTime(2039, 12, 31);
         }
 
@@ -61,7 +61,16 @@ namespace CertificateManager
             return keys;
         }
 
-        public DateTime EffectiveDate { get; set; }
+        public DateTime EffectiveDate {
+            get { return this.effectiveDate; }
+            set
+            {
+                if (value > ExpirationDate)
+                    throw new InvalidOperationException("The EffectiveDate cannot be after the ExpirationDate");
+
+                this.effectiveDate = value;
+            }
+        }
         public DateTime ExpirationDate { get; set; }
     }
 }

@@ -29,15 +29,25 @@ namespace CertificateManager.Tests
         }
 
         [Test]
-        public void CertificateShouldUseTodayAsTheEffectiveDate()
+        public void DefaultCertificateConfigurationShouldUseTodayAsTheEffectiveDate()
         {
             Assert.That(config.EffectiveDate == DateTime.Today);
         }
 
         [Test]
-        public void CertificateShouldHaveADefaultExpirationDateOf2039()
+        public void DefaultCertificateConfigurationShouldHaveADefaultExpirationDateOf2039()
         {
             Assert.That(config.ExpirationDate == new DateTime(2039, 12, 31));
+        }
+
+        [Test]
+        public void CertificateConfigurationShouldThrowIfEffectiveDateIsAfterExpirationDate()
+        {
+            Assert.Throws<InvalidOperationException>(() =>
+                {
+                    config.ExpirationDate = DateTime.Today.AddDays(1);
+                    config.EffectiveDate = DateTime.Today.AddDays(2);
+                });
         }
     }
 }
