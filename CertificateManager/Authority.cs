@@ -1,18 +1,15 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 namespace CertificateManager
 {
     public class Authority
     {
-        private string name;
+        private readonly string _name;
         const string CommonNamePrefix = "CN=";
 
         public Authority(string name)
         {
-            this.name = name;
+            _name = name;
         }
 
         /// <summary>
@@ -20,8 +17,8 @@ namespace CertificateManager
         /// </summary>
         public string CommonName
         {
-            get { return (name.StartsWith(CommonNamePrefix))? name : 
-                String.Concat(CommonNamePrefix, name); }
+            get { return (_name.StartsWith(CommonNamePrefix, StringComparison.CurrentCultureIgnoreCase))? _name : 
+                String.Concat(CommonNamePrefix, _name); }
         }
     }
 }

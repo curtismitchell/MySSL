@@ -16,26 +16,25 @@ namespace CertificateManager
     {
         const string SignatureAlgorithm = "SHA1WithRSAEncryption";
         const int BytesInKeyStrength = 2048;
-        private Authority authority;
+        private readonly Authority _authority;
         private DateTime effectiveDate = DateTime.Today;
 
         public CertificateConfiguration(Authority authority)
         {
-            this.authority = authority;
-            this.ExpirationDate = new DateTime(2039, 12, 31);
+            _authority = authority;
+            ExpirationDate = new DateTime(2039, 12, 31);
         }
 
         /// <summary>
-        /// Creates a certficate that is trusted by the specified authority
+        /// Creates a trusted certficate
         /// </summary>
-        /// <param name="authority">Name of the authority that approves the certificate</param>
         /// <returns>X509Certificate2</returns>
         public X509Certificate2 GenerateCertificate()
         {
-            var keys = CreateKeyPair(BytesInKeyStrength);
+            var keys = CreateKeyPair();
 
             var certGen = new X509V3CertificateGenerator();
-            var dnName = new X509Name(this.authority.CommonName);
+            var dnName = new X509Name(_authority.CommonName);
 
             certGen.SetSerialNumber(BigInteger.ValueOf(1));
             certGen.SetIssuerDN(dnName);
@@ -53,10 +52,10 @@ namespace CertificateManager
         /// </summary>
         /// <param name="strength">integer representing the number of bits</param>
         /// <returns>AsymmetricCipherKeyPair</returns>
-        private AsymmetricCipherKeyPair CreateKeyPair(int strength)
+        private AsymmetricCipherKeyPair CreateKeyPair()
         {
             var keygen = new RsaKeyPairGenerator();
-            keygen.Init(new KeyGenerationParameters(new SecureRandom(), strength));
+            keygen.Init(new KeyGenerationParameters(new SecureRandom(), BytesInKeyStrength));
             var keys = keygen.GenerateKeyPair();
             return keys;
         }
@@ -71,6 +70,7 @@ namespace CertificateManager
                 this.effectiveDate = value;
             }
         }
+
         public DateTime ExpirationDate { get; set; }
     }
 }
