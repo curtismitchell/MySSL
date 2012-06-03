@@ -42,7 +42,7 @@ namespace CertCreator
 
             certGen.SetSerialNumber(BigInteger.ValueOf(SerialNumber));
             certGen.SetIssuerDN(dnName);
-            certGen.SetNotBefore(DateTime.Today);
+            certGen.SetNotBefore(EffectiveDate);
             certGen.SetNotAfter(ExpirationDate);
             certGen.SetSubjectDN(dnName);
             certGen.SetPublicKey(keys.Public);

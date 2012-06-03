@@ -63,11 +63,20 @@ namespace CertCreator.Tests
         [Test]
         public void ShouldBeAbleToChangeTheExpirationDate()
         {
-            _config.ExpirationDate = new DateTime(2035, 12, 31);
+            var expiryDate = new DateTime(2035, 12, 31);
+            _config.ExpirationDate = expiryDate;
             var cert2 = _config.GenerateCertificate();
-            Assert.That(cert2.NotAfter.Year == 2035);
+            Assert.That(cert2.NotAfter.ToUniversalTime().Date == expiryDate.ToUniversalTime().Date);
         }
 
+        [Test]
+        public void ShouldBeAbleToChangeTheEffectiveDate()
+        {
+            var effectiveDate = new DateTime(2020, 1, 1);
+            _config.EffectiveDate = effectiveDate;
+            _cert = _config.GenerateCertificate();
+            Assert.That(_cert.NotBefore.ToUniversalTime().Date == effectiveDate.ToUniversalTime().Date);
+        }
 
     }
 }
