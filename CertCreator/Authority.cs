@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace CertificateManager
+namespace CertCreator
 {
     public class Authority
     {

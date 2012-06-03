@@ -5,7 +5,7 @@ using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using NUnit.Framework;
 
-namespace CertificateManager.Tests
+namespace CertCreator.Tests
 {
     [TestFixture]
     public class TestCertificateCreation
@@ -13,7 +13,7 @@ namespace CertificateManager.Tests
         private Authority _authority;
         private CertificateConfiguration _config;
         private X509Certificate2 _cert;
-        private DateTime _defaultExpirationDate = new DateTime(2039, 12, 31);
+        private readonly DateTime DefaultExpirationDate = new DateTime(2039, 12, 31);
 
         [SetUp]
         public void BeforeEachTest()
@@ -38,7 +38,7 @@ namespace CertificateManager.Tests
         [Test]
         public void DefaultCertificateConfigurationShouldHaveADefaultExpirationDateOf2039()
         {
-            Assert.That(_config.ExpirationDate == _defaultExpirationDate);
+            Assert.That(_config.ExpirationDate == DefaultExpirationDate);
         }
 
         [Test]

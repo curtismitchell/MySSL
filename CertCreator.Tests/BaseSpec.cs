@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using NUnit.Framework;
 
-namespace CertificateManager.Tests
+namespace CertCreator.Tests
 {
     [TestFixture]
     public abstract class BaseSpec

@@ -10,7 +10,7 @@ using Org.BouncyCastle.Math;
 using Org.BouncyCastle.Security;
 using Org.BouncyCastle.X509;
 
-namespace CertificateManager
+namespace CertCreator
 {
     public class CertificateConfiguration
     {
