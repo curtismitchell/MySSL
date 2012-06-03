@@ -16,13 +16,17 @@ namespace CertificateManager
     {
         const string SignatureAlgorithm = "SHA1WithRSAEncryption";
         const int BytesInKeyStrength = 2048;
+        const int DefaultSerialNumber = 1;
+
+        private readonly DateTime DefaultExpirationDate = new DateTime(2039, 12, 31);
         private readonly Authority _authority;
         private DateTime _effectiveDate = DateTime.Today;
 
         public CertificateConfiguration(Authority authority)
         {
             _authority = authority;
-            ExpirationDate = new DateTime(2039, 12, 31);
+            ExpirationDate = DefaultExpirationDate;
+            SerialNumber = DefaultSerialNumber;
         }
 
         /// <summary>
@@ -36,10 +40,10 @@ namespace CertificateManager
             var certGen = new X509V3CertificateGenerator();
             var dnName = new X509Name(_authority.CommonName);
 
-            certGen.SetSerialNumber(BigInteger.ValueOf(1));
+            certGen.SetSerialNumber(BigInteger.ValueOf(SerialNumber));
             certGen.SetIssuerDN(dnName);
             certGen.SetNotBefore(DateTime.Today);
-            certGen.SetNotAfter(DateTime.Today.AddYears(10));
+            certGen.SetNotAfter(ExpirationDate);
             certGen.SetSubjectDN(dnName);
             certGen.SetPublicKey(keys.Public);
             certGen.SetSignatureAlgorithm(SignatureAlgorithm);
@@ -71,5 +75,7 @@ namespace CertificateManager
         }
 
         public DateTime ExpirationDate { get; set; }
+
+        public int SerialNumber { get; set; }
     }
 }
