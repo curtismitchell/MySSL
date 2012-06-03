@@ -7,8 +7,8 @@
     <ProjectGuid>{6DAF149F-6128-4552-B430-710E3D229073}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>CertificateManager</RootNamespace>
-    <AssemblyName>CertificateManager</AssemblyName>
+    <RootNamespace>CertCreator</RootNamespace>
+    <AssemblyName>CertCreator</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
