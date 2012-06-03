@@ -1,11 +1,11 @@
 ﻿<NUnitProject>
   <Settings activeconfig="Debug" />
   <Config name="Debug" binpathtype="Auto">
-    <assembly path="CertificateManager\bin\Debug\CertificateManager.dll" />
-    <assembly path="CertificateManager.Tests\bin\Debug\CertificateManager.Tests.dll" />
+    <assembly path="CertCreator\bin\Debug\CertCreator.dll" />
+    <assembly path="CertCreator.Tests\bin\Debug\CertCreator.Tests.dll" />
   </Config>
   <Config name="Release" binpathtype="Auto">
-    <assembly path="CertificateManager\bin\Release\CertificateManager.dll" />
-    <assembly path="CertificateManager.Tests\bin\Release\CertificateManager.Tests.dll" />
+    <assembly path="CertCreator\bin\Release\CertCreator.dll" />
+    <assembly path="CertCreator.Tests\bin\Release\CertCreator.Tests.dll" />
   </Config>
 </NUnitProject>
