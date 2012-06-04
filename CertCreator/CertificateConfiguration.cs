@@ -15,7 +15,7 @@ namespace CertCreator
     public class CertificateConfiguration
     {
         const string SignatureAlgorithm = "SHA1WithRSAEncryption";
-        const int BytesInKeyStrength = 2048;
+        const int BytesInKeyStrength = 1024;
         const int DefaultSerialNumber = 1;
 
         private readonly DateTime DefaultExpirationDate = new DateTime(2039, 12, 31);
