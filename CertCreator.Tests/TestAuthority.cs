@@ -12,15 +12,15 @@ namespace CertCreator.Tests
         [Test]
         public void AuthorityShouldCreateAProperCommonName()
         {
-            var auth = new Authority("Curtis Mitchell");
-            Assert.That(auth.CommonName.Equals("CN=Curtis Mitchell"));
+            var auth = new CommonName("Curtis Mitchell");
+            Assert.That(auth.Name.Equals("CN=Curtis Mitchell"));
         }
 
         [Test]
         public void AuthorityShouldOnlyAppendTheCommonNameQualifierIfNecessary()
         {
-            var auth = new Authority("CN=Curtis Mitchell");
-            Assert.That(auth.CommonName.Equals("CN=Curtis Mitchell"));
+            var auth = new CommonName("CN=Curtis Mitchell");
+            Assert.That(auth.Name.Equals("CN=Curtis Mitchell"));
         }
     }
 }

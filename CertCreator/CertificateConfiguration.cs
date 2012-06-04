@@ -19,14 +19,15 @@ namespace CertCreator
         const int DefaultSerialNumber = 1;
 
         private readonly DateTime DefaultExpirationDate = new DateTime(2039, 12, 31);
-        private readonly Authority _authority;
+        private readonly CommonName _authority;
         private DateTime _effectiveDate = DateTime.Today;
 
-        public CertificateConfiguration(Authority authority)
+        public CertificateConfiguration(CommonName authority)
         {
             _authority = authority;
             ExpirationDate = DefaultExpirationDate;
             SerialNumber = DefaultSerialNumber;
+            Subject = authority;
         }
 
         /// <summary>
@@ -38,13 +39,14 @@ namespace CertCreator
             var keys = CreateKeyPair();
 
             var certGen = new X509V3CertificateGenerator();
-            var dnName = new X509Name(_authority.CommonName);
+            var dnName = new X509Name(_authority.Name);
+            var subjectName = new X509Name(Subject.Name);
 
             certGen.SetSerialNumber(BigInteger.ValueOf(SerialNumber));
             certGen.SetIssuerDN(dnName);
             certGen.SetNotBefore(EffectiveDate);
             certGen.SetNotAfter(ExpirationDate);
-            certGen.SetSubjectDN(dnName);
+            certGen.SetSubjectDN(subjectName);
             certGen.SetPublicKey(keys.Public);
             certGen.SetSignatureAlgorithm(SignatureAlgorithm);
 
@@ -77,5 +79,7 @@ namespace CertCreator
         public DateTime ExpirationDate { get; set; }
 
         public int SerialNumber { get; set; }
+
+        public CommonName Subject { get; set; }
     }
 }

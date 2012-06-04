@@ -10,7 +10,7 @@ namespace CertCreator.Tests
     [TestFixture]
     public class TestCertificateCreation
     {
-        private Authority _authority;
+        private CommonName _authority;
         private CertificateConfiguration _config;
         private X509Certificate2 _cert;
         private readonly DateTime DefaultExpirationDate = new DateTime(2039, 12, 31);
@@ -18,7 +18,7 @@ namespace CertCreator.Tests
         [SetUp]
         public void BeforeEachTest()
         {
-            _authority = new Authority("LexisNexis Practice Management Authority");
+            _authority = new CommonName("LexisNexis Practice Management Authority");
             _config = new CertificateConfiguration(_authority);
         }
 
@@ -78,5 +78,12 @@ namespace CertCreator.Tests
             Assert.That(_cert.NotBefore.ToUniversalTime().Date == effectiveDate.ToUniversalTime().Date);
         }
 
+        [Test]
+        public void ShouldBeAbleToChangeTheSubject()
+        {
+            _config.Subject = new CommonName("127.0.0.1");
+            _cert = _config.GenerateCertificate();
+            Assert.That(_cert.Subject == "CN=127.0.0.1");
+        }
     }
 }
