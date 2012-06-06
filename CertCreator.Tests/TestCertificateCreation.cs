@@ -85,5 +85,12 @@ namespace CertCreator.Tests
             _cert = _config.GenerateCertificate();
             Assert.That(_cert.Subject == "CN=127.0.0.1");
         }
+
+        [Test]
+        public void CertificateShouldBeVerified()
+        {
+            _cert = _config.GenerateCertificate();
+            Assert.That(_cert.Verify());
+        }
     }
 }
