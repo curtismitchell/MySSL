@@ -136,7 +136,8 @@ namespace MySSL.Tests
         [Test]
         public void SSLCertificateShouldHaveASetPrivateKey()
         {
-            Assert.That(_sslCert.PrivateKey != null);
+            Assert.That(_sslCert.HasPrivateKey);
+            
         }
     }
 }
