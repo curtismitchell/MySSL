@@ -24,7 +24,8 @@ namespace MySSL
         const int BytesInKeyStrength = 1024;
         const int DefaultSerialNumber = 1;
         const string StrongPassword = @"AAAAB3NzaC1yc2EAAAABJQAAAIEAioM3Ov1Nr5ZFac6ItZj4wnzVdhKwp7HQF/T/cFSjuaZjlU89ndDqs5/9TSF5m+0EI441ocK5gw4hAGwTg7ysO2P56mBSFsHTtYWXxee8MU3YEi47Y5pruklIg7JJsHZ6GLRFZuzeIITBI7HulNS1LDjuFjvxcu9HVEYedrPRBLU=";
-
+        
+        private static Random Random;
         private readonly DateTime DefaultExpirationDate = new DateTime(2039, 12, 31);
         private readonly CommonName _authority;
         private DateTime _effectiveDate = DateTime.Today;
@@ -33,6 +34,8 @@ namespace MySSL
 
         public CertificateConfiguration(CommonName authority)
         {
+            if (Random == null) Random = new Random();
+
             _authority = authority;
             _keyPair = CreateKeyPair();
             ExpirationDate = DefaultExpirationDate;
@@ -50,9 +53,9 @@ namespace MySSL
             var certGen = new X509V3CertificateGenerator();
             var dnName = new X509Name(_authority.Name);
             var subjectName = new X509Name(Subject.Name);
-            _authSerial = BigInteger.ProbablePrime(120, new Random());
+            var authSerial = BigInteger.ProbablePrime(120, new Random(Random.Next()));
 
-            certGen.SetSerialNumber(_authSerial);
+            certGen.SetSerialNumber(authSerial);
             certGen.SetIssuerDN(dnName);
             certGen.SetNotBefore(EffectiveDate);
             certGen.SetNotAfter(ExpirationDate);
@@ -68,7 +71,7 @@ namespace MySSL
                 false,
                 new AuthorityKeyIdentifier(
                     SubjectPublicKeyInfoFactory.CreateSubjectPublicKeyInfo(_keyPair.Public),
-                    new GeneralNames(new GeneralName(dnName)), _authSerial));
+                    new GeneralNames(new GeneralName(dnName)), authSerial));
 
             //certGen.AddExtension(
             //    X509Extensions.KeyUsage,
