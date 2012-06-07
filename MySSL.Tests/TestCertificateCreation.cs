@@ -52,12 +52,12 @@ namespace MySSL.Tests
         }
 
         [Test]
-        public void ShouldBeAbleToChangeTheSerialNumberOfTheCertificate()
+        public void SerialNumberShouldBeUnique()
         {
             _cert = _config.GenerateCertificate();
-            _config.SerialNumber = 2;
             var cert2 = _config.GenerateCertificate();
-            Assert.That(_cert.GetSerialNumberString() != cert2.GetSerialNumberString());
+            Assert.That(_cert.GetSerialNumberString() != cert2.GetSerialNumberString(),
+                String.Format("{0} should not equal {1}", _cert.GetSerialNumberString(), cert2.GetSerialNumberString()));
         }
 
         [Test]
@@ -84,13 +84,6 @@ namespace MySSL.Tests
             _config.Subject = new CommonName("127.0.0.1");
             _cert = _config.GenerateCertificate();
             Assert.That(_cert.Subject == "CN=127.0.0.1");
-        }
-
-        [Test]
-        public void CertificateShouldBeVerified()
-        {
-            _cert = _config.GenerateCertificate();
-            Assert.That(_cert.Verify());
         }
     }
 }

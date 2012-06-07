@@ -38,7 +38,7 @@ namespace MySSL
             ExpirationDate = DefaultExpirationDate;
             SerialNumber = DefaultSerialNumber;
             Subject = authority;
-            _authSerial = BigInteger.ProbablePrime(120, new Random());
+            
         }
 
         /// <summary>
@@ -50,6 +50,7 @@ namespace MySSL
             var certGen = new X509V3CertificateGenerator();
             var dnName = new X509Name(_authority.Name);
             var subjectName = new X509Name(Subject.Name);
+            _authSerial = BigInteger.ProbablePrime(120, new Random());
 
             certGen.SetSerialNumber(_authSerial);
             certGen.SetIssuerDN(dnName);

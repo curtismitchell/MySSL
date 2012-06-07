@@ -7,17 +7,17 @@ using NUnit.Framework;
 namespace MySSL.Tests
 {
     [TestFixture]
-    public class TestAuthority
+    public class TestCommonName
     {
         [Test]
-        public void AuthorityShouldCreateAProperCommonName()
+        public void NameShouldHavePrependedQualifier()
         {
             var auth = new CommonName("Curtis Mitchell");
             Assert.That(auth.Name.Equals("CN=Curtis Mitchell"));
         }
 
         [Test]
-        public void AuthorityShouldOnlyAppendTheCommonNameQualifierIfNecessary()
+        public void NameShouldOnlyAppendTheCommonNameQualifierIfNecessary()
         {
             var auth = new CommonName("CN=Curtis Mitchell");
             Assert.That(auth.Name.Equals("CN=Curtis Mitchell"));
