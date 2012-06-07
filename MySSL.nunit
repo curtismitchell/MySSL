@@ -1,0 +1,11 @@
+﻿<NUnitProject>
+  <Settings activeconfig="Debug" />
+  <Config name="Debug" binpathtype="Auto">
+    <assembly path="MySSL\bin\Debug\MySSL.dll" />
+    <assembly path="MySSL.Tests\bin\Debug\MySSL.Tests.dll" />
+  </Config>
+  <Config name="Release" binpathtype="Auto">
+    <assembly path="MySSL\bin\Release\MySSL.dll" />
+    <assembly path="MySSL.Tests\bin\Release\MySSL.Tests.dll" />
+  </Config>
+</NUnitProject>

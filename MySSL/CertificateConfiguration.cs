@@ -16,7 +16,7 @@ using Org.BouncyCastle.Security;
 using Org.BouncyCastle.X509;
 using Org.BouncyCastle.X509.Extension;
 
-namespace CertCreator
+namespace MySSL
 {
     public class CertificateConfiguration
     {
@@ -80,7 +80,7 @@ namespace CertCreator
                 new BasicConstraints(true).ToAsn1Object());
 
             var cert = certGen.Generate(_keyPair.Private);
-            var dotnetcert = new X509Certificate2(cert.GetEncoded(), StrongPassword, X509KeyStorageFlags.PersistKeySet);
+            var dotnetcert = new X509Certificate2(DotNetUtilities.ToX509Certificate((Org.BouncyCastle.X509.X509Certificate)cert));
             //var rsaParams = DotNetUtilities.ToRSAParameters((RsaPrivateCrtKeyParameters)_keyPair.Private);
             //var rsa = DotNetUtilities.ToRSA((RsaPrivateCrtKeyParameters)_keyPair.Private);
             //dotnetcert.PrivateKey = rsa;
@@ -124,7 +124,7 @@ namespace CertCreator
                 new BasicConstraints(false).ToAsn1Object());
 
             var cert = certGen.Generate(_keyPair.Private);
-            var dotnetcert = new X509Certificate2(cert.GetEncoded(), StrongPassword, X509KeyStorageFlags.PersistKeySet);
+            var dotnetcert = new X509Certificate2(DotNetUtilities.ToX509Certificate((Org.BouncyCastle.X509.X509Certificate)cert));
             //var rsaParams = DotNetUtilities.ToRSAParameters((RsaPrivateCrtKeyParameters)_keyPair.Private);
             //var rsa = DotNetUtilities.ToRSA((RsaPrivateCrtKeyParameters)_keyPair.Private);
             RSACryptoServiceProvider tempRcsp = (RSACryptoServiceProvider)DotNetUtilities.ToRSA((RsaPrivateCrtKeyParameters)_keyPair.Private);

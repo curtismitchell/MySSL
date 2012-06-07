@@ -7,8 +7,8 @@
     <ProjectGuid>{6DAF149F-6128-4552-B430-710E3D229073}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>CertCreator</RootNamespace>
-    <AssemblyName>CertCreator</AssemblyName>
+    <RootNamespace>MySSL</RootNamespace>
+    <AssemblyName>MySSL</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>

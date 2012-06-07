@@ -7,7 +7,7 @@
 [assembly: AssemblyCopyright("Copyright © LexisNexis 2012")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
-[assembly: AssemblyProduct("CertificateManager")]
+[assembly: AssemblyProduct("MySSL")]
 
 // Version information for an assembly consists of the following four values:
 //

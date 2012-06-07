@@ -1,9 +1,9 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2012
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CertCreator", "CertCreator\CertCreator.csproj", "{6DAF149F-6128-4552-B430-710E3D229073}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MySSL", "MySSL\MySSL.csproj", "{6DAF149F-6128-4552-B430-710E3D229073}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CertCreator.Tests", "CertCreator.Tests\CertCreator.Tests.csproj", "{F2DCB784-50EB-4CE4-8870-5D24FF787113}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MySSL.Tests", "MySSL.Tests\MySSL.Tests.csproj", "{F2DCB784-50EB-4CE4-8870-5D24FF787113}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{39F22B5F-A72A-4D11-BFCA-C4843732D7C9}"
 	ProjectSection(SolutionItems) = preProject

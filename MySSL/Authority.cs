@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace CertCreator
+namespace MySSL
 {
     public class CommonName
     {
