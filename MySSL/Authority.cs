@@ -6,8 +6,12 @@ using Org.BouncyCastle.Crypto.Generators;
 using Org.BouncyCastle.Math;
 using Org.BouncyCastle.Security;
 using Org.BouncyCastle.X509;
+
 namespace MySSL
 {
+    /// <summary>
+    /// An Authority is a certificate that is trusted and authorized to issue certificates.
+    /// </summary>
     public class Authority
     {
         const string SignatureAlgorithm = "SHA1WithRSAEncryption";
@@ -25,6 +29,8 @@ namespace MySSL
         public Authority(string authority)
         {
             _issuer = new X509Name(new CommonName(authority).Name);
+            _authSerial = BigInteger.ProbablePrime(120, new Random());
+
             _certGen = new X509V3CertificateGenerator();
             _certGen.SetSignatureAlgorithm(SignatureAlgorithm);
             _certGen.SetIssuerDN(_issuer);
@@ -44,9 +50,12 @@ namespace MySSL
         private X509Certificate2 GenerateCertificate()
         {
             var _keyPair = CreateKeyPair();
-            _authSerial = BigInteger.ProbablePrime(120, new Random());
 
-            _certGen.SetSerialNumber(_authSerial);
+            if (X509Certificate == null) // generating auth certificate
+                _certGen.SetSerialNumber(_authSerial);
+            else
+                _certGen.SetSerialNumber(BigInteger.ProbablePrime(120, new Random()));
+
             _certGen.SetNotBefore(DateTime.Today);
             _certGen.SetNotAfter(DateTime.MaxValue);
             _certGen.SetPublicKey(_keyPair.Public);
@@ -58,10 +67,10 @@ namespace MySSL
                     SubjectPublicKeyInfoFactory.CreateSubjectPublicKeyInfo(_keyPair.Public),
                     new GeneralNames(new GeneralName(_issuer)), _authSerial));
 
-            //certGen.AddExtension(
-            //    X509Extensions.BasicConstraints,
-            //    true,
-            //    new BasicConstraints(true).ToAsn1Object());
+            _certGen.AddExtension(
+                X509Extensions.BasicConstraints,
+                true,
+                new BasicConstraints(true).ToAsn1Object());
 
             var cert = _certGen.Generate(_keyPair.Private);
             return new X509Certificate2(DotNetUtilities.ToX509Certificate((Org.BouncyCastle.X509.X509Certificate)cert));
@@ -77,6 +86,26 @@ namespace MySSL
             keygen.Init(new KeyGenerationParameters(new SecureRandom(), BytesInKeyStrength));
             var keys = keygen.GenerateKeyPair();
             return keys;
+        }
+
+        public X509Certificate2 GetSSLCertificate()
+        {
+            _certGen.Reset();
+            _certGen.SetSignatureAlgorithm(SignatureAlgorithm);
+            _certGen.SetIssuerDN(_issuer);
+            _certGen.SetSubjectDN(GetMachineName());
+            _certGen.AddExtension(
+                X509Extensions.ExtendedKeyUsage.Id,
+                false,
+                new ExtendedKeyUsage(KeyPurposeID.IdKPServerAuth));
+
+            return GenerateCertificate();
+        }
+
+        private X509Name GetMachineName()
+        {
+            var cn = new CommonName(Environment.MachineName);
+            return new X509Name(cn.Name);
         }
     }
 }
