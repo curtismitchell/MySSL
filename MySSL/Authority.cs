@@ -1,8 +1,11 @@
 ﻿using System;
+using System.Security.AccessControl;
+using System.Security.Cryptography;
 using System.Security.Cryptography.X509Certificates;
 using Org.BouncyCastle.Asn1.X509;
 using Org.BouncyCastle.Crypto;
 using Org.BouncyCastle.Crypto.Generators;
+using Org.BouncyCastle.Crypto.Parameters;
 using Org.BouncyCastle.Math;
 using Org.BouncyCastle.Security;
 using Org.BouncyCastle.X509;
@@ -22,7 +25,7 @@ namespace MySSL
         private readonly X509V3CertificateGenerator _certGen;
 
         //private DateTime _effectiveDate = DateTime.Today;
-        //private AsymmetricCipherKeyPair _keyPair;
+        private AsymmetricCipherKeyPair _keyPair;
         private BigInteger _authSerial;
         X509Certificate2 _cert;
 
@@ -49,9 +52,10 @@ namespace MySSL
         /// <returns>X509Certificate2</returns>
         private X509Certificate2 GenerateCertificate()
         {
-            var _keyPair = CreateKeyPair();
+            if(_keyPair == null) _keyPair = CreateKeyPair();
+            var creatingAuthCert = (X509Certificate == null);
 
-            if (X509Certificate == null) // generating auth certificate
+            if (creatingAuthCert) // generating auth certificate
                 _certGen.SetSerialNumber(_authSerial);
             else
                 _certGen.SetSerialNumber(BigInteger.ProbablePrime(120, new Random()));
@@ -70,10 +74,18 @@ namespace MySSL
             _certGen.AddExtension(
                 X509Extensions.BasicConstraints,
                 true,
-                new BasicConstraints(true).ToAsn1Object());
+                new BasicConstraints(creatingAuthCert).ToAsn1Object());
 
             var cert = _certGen.Generate(_keyPair.Private);
-            return new X509Certificate2(DotNetUtilities.ToX509Certificate((Org.BouncyCastle.X509.X509Certificate)cert));
+
+            var dotnetCert = new X509Certificate2(DotNetUtilities.ToX509Certificate((Org.BouncyCastle.X509.X509Certificate)cert));
+            if (creatingAuthCert) return dotnetCert;
+
+            RSACryptoServiceProvider tempRcsp = (RSACryptoServiceProvider)DotNetUtilities.ToRSA((RsaPrivateCrtKeyParameters)_keyPair.Private);
+            RSACryptoServiceProvider rcsp = new RSACryptoServiceProvider(new CspParameters(1, "Microsoft Strong Cryptographic Provider", new Guid().ToString(), new CryptoKeySecurity(), null));
+            rcsp.ImportCspBlob(tempRcsp.ExportCspBlob(true));
+            dotnetCert.PrivateKey = rcsp;
+            return dotnetCert;
         }
 
         /// <summary>

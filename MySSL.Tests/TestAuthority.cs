@@ -110,5 +110,33 @@ namespace MySSL.Tests
 
             Assert.That(hasServerAuthentication);
         }
+
+        [Test]
+        public void SSLCertificateShouldHaveMatchingPublicKeyAsAuthority()
+        {
+            Assert.That(_auth.X509Certificate.PublicKey.EncodedKeyValue.Format(false) == _sslCert.PublicKey.EncodedKeyValue.Format(false));
+        }
+
+        [Test]
+        public void SSLCertificateShouldHaveBasicConstraintsNotCA()
+        {
+            var hasExtension = false;
+            foreach (var ext in _sslCert.Extensions)
+            {
+                if (ext.Format(true).StartsWith("Subject Type=End Entity"))
+                {
+                    hasExtension = true;
+                    break;
+                }
+            }
+
+            Assert.That(hasExtension);
+        }
+
+        [Test]
+        public void SSLCertificateShouldHaveASetPrivateKey()
+        {
+            Assert.That(_sslCert.PrivateKey != null);
+        }
     }
 }
