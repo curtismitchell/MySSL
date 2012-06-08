@@ -24,5 +24,10 @@ namespace MySSL
             // remove cert from personalStore
             _personalStore.Delete(savedCert);
         }
+
+        public void InstallSSL(X509Certificate2 sslCertificate)
+        {
+            _personalStore.Save(sslCertificate);
+        }
     }
 }
