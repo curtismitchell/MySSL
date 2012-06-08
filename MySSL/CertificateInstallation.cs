@@ -1,5 +1,5 @@
-﻿
-using System.Security.Cryptography.X509Certificates;
+﻿using System.Security.Cryptography.X509Certificates;
+
 namespace MySSL
 {
     public class CertificateInstallation
@@ -11,6 +11,15 @@ namespace MySSL
         {
             _personalStore = personalStore;
             _authorityStore = authorityStore;
+        }
+
+        /// <summary>
+        /// Uses the Root store for the authority certificate and My store for the ssl certificate
+        /// </summary>
+        public CertificateInstallation() :
+            this(new MyCertificateStore(), new RootCertificateStore())
+        {
+            
         }
 
         public void InstallAuthority(X509Certificate2 authCert)

@@ -48,9 +48,12 @@
     <Compile Include="Authority.cs" />
     <Compile Include="CertificateInstallation.cs" />
     <Compile Include="CertificateStore.cs" />
+    <Compile Include="CertificateStoreBase.cs" />
     <Compile Include="CommonName.cs" />
     <Compile Include="ICertificateStore.cs" />
+    <Compile Include="MyCertificateStore.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="RootCertificateStore.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

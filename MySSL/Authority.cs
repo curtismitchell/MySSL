@@ -22,20 +22,20 @@ namespace MySSL
 
         private readonly X509Name _issuer;
         private readonly X509V3CertificateGenerator _certGen;
-        private readonly AsymmetricCipherKeyPair _keyPair;
         private readonly BigInteger _authSerial;
+
         private bool _creatingAuthCert = true;
+        private AsymmetricCipherKeyPair _keyPair;
 
         public Authority(string authority)
         {
             _issuer = new X509Name(new CommonName(authority).Name);
             _authSerial = GetSerialNumber();
-            _keyPair = CreateKeyPair();
+            CreateKeyPair();
 
             _certGen = new X509V3CertificateGenerator();
-            _certGen.SetSignatureAlgorithm(SignatureAlgorithm);
-            _certGen.SetIssuerDN(_issuer);
             _certGen.SetSubjectDN(_issuer);
+            _certGen.SetSerialNumber(_authSerial);
 
             X509Certificate = GenerateCertificate();
             _creatingAuthCert = false;
@@ -49,6 +49,8 @@ namespace MySSL
 
         private void PrepareCertificate()
         {
+            _certGen.SetIssuerDN(_issuer);
+            _certGen.SetSignatureAlgorithm(SignatureAlgorithm);
             _certGen.SetNotBefore(DateTime.Today);
             _certGen.SetNotAfter(DateTime.MaxValue);
             _certGen.SetPublicKey(_keyPair.Public);
@@ -65,27 +67,17 @@ namespace MySSL
                 true,
                 new BasicConstraints(_creatingAuthCert).ToAsn1Object());
 
-            SetSerialNumber();
-        }
-
-        private void SetSerialNumber()
-        {
-            if (_creatingAuthCert) // generating auth certificate
-                _certGen.SetSerialNumber(_authSerial);
-            else
-                _certGen.SetSerialNumber(GetSerialNumber());            
         }
 
         /// <summary>
         /// Creates a keypair
         /// </summary>
         /// <returns>AsymmetricCipherKeyPair</returns>
-        private AsymmetricCipherKeyPair CreateKeyPair()
+        private void CreateKeyPair()
         {
             var keygen = new RsaKeyPairGenerator();
             keygen.Init(new KeyGenerationParameters(new SecureRandom(), BytesInKeyStrength));
-            var keys = keygen.GenerateKeyPair();
-            return keys;
+            _keyPair = keygen.GenerateKeyPair();
         }
 
         /// <summary>
@@ -105,14 +97,11 @@ namespace MySSL
         {
             PrepareCertificate();
             var cert = _certGen.Generate(_keyPair.Private);
-            var x509cert = new X509Certificate2(DotNetUtilities.ToX509Certificate((Org.BouncyCastle.X509.X509Certificate)cert));
-            AddPrivateKeyIfNecessary(x509cert);
-            return x509cert;
+            return new X509Certificate2(DotNetUtilities.ToX509Certificate((Org.BouncyCastle.X509.X509Certificate)cert));
         }
 
-        private void AddPrivateKeyIfNecessary(X509Certificate2 cert)
+        private void AddPrivateKey(X509Certificate2 cert)
         {
-            if (X509Certificate == null) return; // only the ssl certs need to have the private key
             RSACryptoServiceProvider tempRcsp = (RSACryptoServiceProvider)DotNetUtilities.ToRSA((RsaPrivateCrtKeyParameters)_keyPair.Private);
             RSACryptoServiceProvider rcsp = new RSACryptoServiceProvider(new CspParameters(1, "Microsoft Strong Cryptographic Provider", new Guid().ToString(), new CryptoKeySecurity(), null));
             rcsp.ImportCspBlob(tempRcsp.ExportCspBlob(true));
@@ -122,15 +111,18 @@ namespace MySSL
         public X509Certificate2 GetSSLCertificate()
         {
             _certGen.Reset();
-            _certGen.SetSignatureAlgorithm(SignatureAlgorithm);
-            _certGen.SetIssuerDN(_issuer);
+
             _certGen.SetSubjectDN(GetMachineName());
+            _certGen.SetSerialNumber(GetSerialNumber()); 
+
             _certGen.AddExtension(
                 X509Extensions.ExtendedKeyUsage.Id,
                 false,
                 new ExtendedKeyUsage(KeyPurposeID.IdKPServerAuth));
 
-            return GenerateCertificate();
+            var cert = GenerateCertificate();
+            AddPrivateKey(cert);
+            return cert;
         }
 
         private X509Name GetMachineName()
