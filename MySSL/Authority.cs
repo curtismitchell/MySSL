@@ -97,21 +97,20 @@ namespace MySSL
         {
             PrepareCertificate();
             var cert = _certGen.Generate(_keyPair.Private);
+            _certGen.Reset();
             return new X509Certificate2(DotNetUtilities.ToX509Certificate((Org.BouncyCastle.X509.X509Certificate)cert));
         }
 
-        private void AddPrivateKey(X509Certificate2 cert)
+        private AsymmetricAlgorithm GetPrivateKey()
         {
             RSACryptoServiceProvider tempRcsp = (RSACryptoServiceProvider)DotNetUtilities.ToRSA((RsaPrivateCrtKeyParameters)_keyPair.Private);
             RSACryptoServiceProvider rcsp = new RSACryptoServiceProvider(new CspParameters(1, "Microsoft Strong Cryptographic Provider", new Guid().ToString(), new CryptoKeySecurity(), null));
             rcsp.ImportCspBlob(tempRcsp.ExportCspBlob(true));
-            cert.PrivateKey = rcsp;
+            return rcsp;
         }
 
         public X509Certificate2 GetSSLCertificate()
         {
-            _certGen.Reset();
-
             _certGen.SetSubjectDN(GetMachineName());
             _certGen.SetSerialNumber(GetSerialNumber()); 
 
@@ -121,7 +120,7 @@ namespace MySSL
                 new ExtendedKeyUsage(KeyPurposeID.IdKPServerAuth));
 
             var cert = GenerateCertificate();
-            AddPrivateKey(cert);
+            cert.PrivateKey = GetPrivateKey();
             return cert;
         }
 
