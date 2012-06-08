@@ -46,8 +46,10 @@
       <Link>CommonAssemblyInfo.cs</Link>
     </Compile>
     <Compile Include="Authority.cs" />
+    <Compile Include="CertificateInstallation.cs" />
+    <Compile Include="CertificateStore.cs" />
     <Compile Include="CommonName.cs" />
-    <Compile Include="CertificateConfiguration.cs" />
+    <Compile Include="ICertificateStore.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
