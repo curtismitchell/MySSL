@@ -49,7 +49,7 @@ namespace MySSL.Tests
         [Test]
         public void AuthorityShouldIssueSSLCertificates()
         {
-            Assert.That(_sslCert is X509Certificate2);
+            Assert.That(_sslCert != null);
         }
 
         [Test]

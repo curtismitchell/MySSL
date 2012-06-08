@@ -20,46 +20,35 @@ namespace MySSL
         const string SignatureAlgorithm = "SHA1WithRSAEncryption";
         const int BytesInKeyStrength = 1024;
 
-        //private readonly DateTime DefaultExpirationDate = new DateTime(2039, 12, 31);
         private readonly X509Name _issuer;
         private readonly X509V3CertificateGenerator _certGen;
-
-        //private DateTime _effectiveDate = DateTime.Today;
-        private AsymmetricCipherKeyPair _keyPair;
-        private BigInteger _authSerial;
-        X509Certificate2 _cert;
+        private readonly AsymmetricCipherKeyPair _keyPair;
+        private readonly BigInteger _authSerial;
+        private bool _creatingAuthCert = true;
 
         public Authority(string authority)
         {
             _issuer = new X509Name(new CommonName(authority).Name);
-            _authSerial = BigInteger.ProbablePrime(120, new Random());
+            _authSerial = GetSerialNumber();
+            _keyPair = CreateKeyPair();
 
             _certGen = new X509V3CertificateGenerator();
             _certGen.SetSignatureAlgorithm(SignatureAlgorithm);
             _certGen.SetIssuerDN(_issuer);
             _certGen.SetSubjectDN(_issuer);
-            _cert = GenerateCertificate();
+
+            X509Certificate = GenerateCertificate();
+            _creatingAuthCert = false;
         }
 
         public X509Certificate2 X509Certificate
         {
-            get { return _cert; }
+            get;
+            private set;
         }
 
-        /// <summary>
-        /// Creates a trusted certficate
-        /// </summary>
-        /// <returns>X509Certificate2</returns>
-        private X509Certificate2 GenerateCertificate()
+        private void PrepareCertificate()
         {
-            if(_keyPair == null) _keyPair = CreateKeyPair();
-            var creatingAuthCert = (X509Certificate == null);
-
-            if (creatingAuthCert) // generating auth certificate
-                _certGen.SetSerialNumber(_authSerial);
-            else
-                _certGen.SetSerialNumber(BigInteger.ProbablePrime(120, new Random()));
-
             _certGen.SetNotBefore(DateTime.Today);
             _certGen.SetNotAfter(DateTime.MaxValue);
             _certGen.SetPublicKey(_keyPair.Public);
@@ -74,18 +63,17 @@ namespace MySSL
             _certGen.AddExtension(
                 X509Extensions.BasicConstraints,
                 true,
-                new BasicConstraints(creatingAuthCert).ToAsn1Object());
+                new BasicConstraints(_creatingAuthCert).ToAsn1Object());
 
-            var cert = _certGen.Generate(_keyPair.Private);
+            SetSerialNumber();
+        }
 
-            var dotnetCert = new X509Certificate2(DotNetUtilities.ToX509Certificate((Org.BouncyCastle.X509.X509Certificate)cert));
-            if (creatingAuthCert) return dotnetCert;
-
-            RSACryptoServiceProvider tempRcsp = (RSACryptoServiceProvider)DotNetUtilities.ToRSA((RsaPrivateCrtKeyParameters)_keyPair.Private);
-            RSACryptoServiceProvider rcsp = new RSACryptoServiceProvider(new CspParameters(1, "Microsoft Strong Cryptographic Provider", new Guid().ToString(), new CryptoKeySecurity(), null));
-            rcsp.ImportCspBlob(tempRcsp.ExportCspBlob(true));
-            dotnetCert.PrivateKey = rcsp;
-            return dotnetCert;
+        private void SetSerialNumber()
+        {
+            if (_creatingAuthCert) // generating auth certificate
+                _certGen.SetSerialNumber(_authSerial);
+            else
+                _certGen.SetSerialNumber(GetSerialNumber());            
         }
 
         /// <summary>
@@ -98,6 +86,37 @@ namespace MySSL
             keygen.Init(new KeyGenerationParameters(new SecureRandom(), BytesInKeyStrength));
             var keys = keygen.GenerateKeyPair();
             return keys;
+        }
+
+        /// <summary>
+        /// Create a 120-bit serial number
+        /// </summary>
+        /// <returns>BigInteger serial number</returns>
+        private BigInteger GetSerialNumber()
+        {
+            return BigInteger.ProbablePrime(120, new Random());
+        }
+
+        /// <summary>
+        /// Creates a trusted certficate
+        /// </summary>
+        /// <returns>X509Certificate2</returns>
+        private X509Certificate2 GenerateCertificate()
+        {
+            PrepareCertificate();
+            var cert = _certGen.Generate(_keyPair.Private);
+            var x509cert = new X509Certificate2(DotNetUtilities.ToX509Certificate((Org.BouncyCastle.X509.X509Certificate)cert));
+            AddPrivateKeyIfNecessary(x509cert);
+            return x509cert;
+        }
+
+        private void AddPrivateKeyIfNecessary(X509Certificate2 cert)
+        {
+            if (X509Certificate == null) return; // only the ssl certs need to have the private key
+            RSACryptoServiceProvider tempRcsp = (RSACryptoServiceProvider)DotNetUtilities.ToRSA((RsaPrivateCrtKeyParameters)_keyPair.Private);
+            RSACryptoServiceProvider rcsp = new RSACryptoServiceProvider(new CspParameters(1, "Microsoft Strong Cryptographic Provider", new Guid().ToString(), new CryptoKeySecurity(), null));
+            rcsp.ImportCspBlob(tempRcsp.ExportCspBlob(true));
+            cert.PrivateKey = rcsp;
         }
 
         public X509Certificate2 GetSSLCertificate()
