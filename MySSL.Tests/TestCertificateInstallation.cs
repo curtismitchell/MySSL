@@ -39,5 +39,22 @@ namespace MySSL.Tests
 
             _mockPersonalStore.Verify(_ => _.Save(cert));
         }
+
+        [Test]
+        public void CertificateInstallationShouldInstallBothCertificates()
+        {
+            var ca = new Authority("TestAuthority");
+            var sslCert = ca.GetSSLCertificate();
+            _mockPersonalStore.Setup(_ => _.Find(ca.X509Certificate.Thumbprint))
+                .Returns(ca.X509Certificate);
+
+            _certInstall.Install(ca.X509Certificate, sslCert);
+
+            _mockPersonalStore.Verify(_ => _.Save(ca.X509Certificate));
+            _mockRootStore.Verify(_ => _.Save(ca.X509Certificate));
+            _mockPersonalStore.Verify(_ => _.Delete(ca.X509Certificate));
+
+            _mockPersonalStore.Verify(_ => _.Save(sslCert));
+        }
     }
 }

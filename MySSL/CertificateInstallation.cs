@@ -29,5 +29,11 @@ namespace MySSL
         {
             _personalStore.Save(sslCertificate);
         }
+
+        public void Install(X509Certificate2 authorityCertificate, X509Certificate2 sslCertificate)
+        {
+            InstallAuthority(authorityCertificate);
+            InstallSSL(sslCertificate);
+        }
     }
 }
