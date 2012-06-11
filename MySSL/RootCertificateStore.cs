@@ -4,11 +4,15 @@ namespace MySSL
 {
     class RootCertificateStore : CertificateStoreBase
     {
+        X509Store _instance;
+
         protected override X509Store Store
         {
             get
             {
-                return new X509Store(StoreName.Root, StoreLocation.LocalMachine);
+                if (_instance == null)
+                    _instance = new X509Store(StoreName.Root, StoreLocation.LocalMachine);
+                return _instance;
             }
         }
     }
