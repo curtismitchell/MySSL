@@ -47,6 +47,7 @@
     </Compile>
     <Compile Include="Authority.cs" />
     <Compile Include="CertificateInstallation.cs" />
+    <Compile Include="CertificateNotFoundException.cs" />
     <Compile Include="CertificateStore.cs" />
     <Compile Include="CertificateStoreBase.cs" />
     <Compile Include="CommonName.cs" />

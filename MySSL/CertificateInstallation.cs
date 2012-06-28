@@ -44,5 +44,29 @@ namespace MySSL
             InstallAuthority(authorityCertificate);
             InstallSSL(sslCertificate);
         }
+
+        public void UninstallSSL(string thumbprint)
+        {
+            // find cert in personalStore
+            var savedCert = _personalStore.Find(thumbprint);
+            if (savedCert == null)
+                throw new CertificateNotFoundException();
+
+            _personalStore.Delete(savedCert);
+        }
+
+        public void UninstallAuthority(string thumbprint)
+        {
+            var savedCert = _authorityStore.Find(thumbprint);
+            if (savedCert == null)
+                throw new CertificateNotFoundException();
+            _authorityStore.Delete(savedCert);
+        }
+
+        public void Uninstall(string authorityThumbprint, string sslThumbprint)
+        {
+            UninstallAuthority(authorityThumbprint);
+            UninstallSSL(sslThumbprint);
+        }
     }
 }

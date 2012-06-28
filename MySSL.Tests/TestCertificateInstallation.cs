@@ -56,5 +56,57 @@ namespace MySSL.Tests
 
             _mockPersonalStore.Verify(_ => _.Save(sslCert));
         }
+
+        [Test]
+        public void CertificateInstallationShouldRemoveSSLIfFound()
+        {
+            var ca = new Authority("TestAuthority");
+            var sslCert = ca.GetSSLCertificate();
+            _mockPersonalStore.Setup(_ => _.Find(sslCert.Thumbprint))
+                .Returns(sslCert);
+
+            _certInstall.UninstallSSL(sslCert.Thumbprint);
+            _mockPersonalStore.Verify(_ => _.Find(sslCert.Thumbprint));
+            _mockPersonalStore.Verify(_ => _.Delete(sslCert));
+        }
+
+        [Test]
+        public void ShouldThrowIfSSLCertificateIsNotFoundAndCannotBeRemoved()
+        {
+            var ca = new Authority("TestAuthority");
+            var sslCert = ca.GetSSLCertificate();
+            _mockPersonalStore.Setup(_ => _.Find(sslCert.Thumbprint))
+                .Returns<X509Certificate2>(null);
+
+            Assert.Throws<CertificateNotFoundException>(() =>
+                _certInstall.UninstallSSL(sslCert.Thumbprint)
+                );
+        }
+
+        [Test]
+        public void ShouldRemoveAuthorityIfFound()
+        {
+            var ca = new Authority("TestAuthority");
+
+            _mockRootStore.Setup(_ => _.Find(ca.X509Certificate.Thumbprint))
+                .Returns(ca.X509Certificate);
+
+            _certInstall.UninstallAuthority(ca.X509Certificate.Thumbprint);
+            _mockRootStore.Verify(_ => _.Find(ca.X509Certificate.Thumbprint));
+            _mockRootStore.Verify(_ => _.Delete(ca.X509Certificate));
+        }
+
+        [Test]
+        public void ShouldThrowIfAuthorityIsNotFound()
+        {
+            var ca = new Authority("TestAuthority");
+  
+            _mockRootStore.Setup(_ => _.Find(ca.X509Certificate.Thumbprint))
+                .Returns<X509Certificate>(null);
+
+            Assert.Throws<CertificateNotFoundException>(() =>
+                _certInstall.UninstallAuthority(ca.X509Certificate.Thumbprint)
+                );
+        }
     }
 }
