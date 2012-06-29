@@ -19,6 +19,7 @@ namespace MySSL
     {
         const string SignatureAlgorithm = "SHA1WithRSAEncryption";
         const int BytesInKeyStrength = 1024;
+        const int YearsBeforeExpiration = 10;
 
         private readonly X509Name _issuer;
         private readonly X509V3CertificateGenerator _certGen;
@@ -52,7 +53,7 @@ namespace MySSL
             _certGen.SetIssuerDN(_issuer);
             _certGen.SetSignatureAlgorithm(SignatureAlgorithm);
             _certGen.SetNotBefore(DateTime.Today);
-            _certGen.SetNotAfter(DateTime.MaxValue);
+            _certGen.SetNotAfter(DateTime.Today.AddYears(YearsBeforeExpiration));
             _certGen.SetPublicKey(_keyPair.Public);
 
             _certGen.AddExtension(
