@@ -102,12 +102,22 @@ namespace MySSL
             return new X509Certificate2(DotNetUtilities.ToX509Certificate((Org.BouncyCastle.X509.X509Certificate)cert));
         }
 
+        //private AsymmetricAlgorithm GetPrivateKey()
+        //{
+        //    RSACryptoServiceProvider tempRcsp = (RSACryptoServiceProvider)DotNetUtilities.ToRSA((RsaPrivateCrtKeyParameters)_keyPair.Private);
+        //    RSACryptoServiceProvider rcsp = new RSACryptoServiceProvider(new CspParameters(1, "Microsoft Strong Cryptographic Provider", new Guid().ToString(), new CryptoKeySecurity(), null));
+        //    rcsp.ImportCspBlob(tempRcsp.ExportCspBlob(true));
+        //    return rcsp;
+        //}
+
         private AsymmetricAlgorithm GetPrivateKey()
         {
-            RSACryptoServiceProvider tempRcsp = (RSACryptoServiceProvider)DotNetUtilities.ToRSA((RsaPrivateCrtKeyParameters)_keyPair.Private);
-            RSACryptoServiceProvider rcsp = new RSACryptoServiceProvider(new CspParameters(1, "Microsoft Strong Cryptographic Provider", new Guid().ToString(), new CryptoKeySecurity(), null));
-            rcsp.ImportCspBlob(tempRcsp.ExportCspBlob(true));
-            return rcsp;
+            RsaPrivateCrtKeyParameters keyParams = (RsaPrivateCrtKeyParameters)_keyPair.Private;
+            RSAParameters rsaParameters = DotNetUtilities.ToRSAParameters(keyParams);
+            CspParameters cspParameters = new CspParameters();
+            RSACryptoServiceProvider rsaKey = new RSACryptoServiceProvider(BytesInKeyStrength, cspParameters);
+            rsaKey.ImportParameters(rsaParameters);
+            return rsaKey;
         }
 
         public X509Certificate2 GetSSLCertificate()

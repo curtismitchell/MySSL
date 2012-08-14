@@ -17,7 +17,8 @@ namespace MySSL
         public void Save(X509Certificate2 certificate)
         {
             _xStore.Open(OpenFlags.ReadWrite);
-            _xStore.Add(certificate);
+            //_xStore.Add(certificate);
+            _xStore.Certificates.Import(certificate.RawData);
             _xStore.Close();
         }
 

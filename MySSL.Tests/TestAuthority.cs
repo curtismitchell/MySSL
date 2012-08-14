@@ -17,6 +17,13 @@ namespace MySSL.Tests
             _sslCert = _auth.GetSSLCertificate();
         }
 
+        [TearDown]
+        public void AfterEachTest()
+        {
+            _sslCert = null;
+            _auth = null;
+        }
+
         [Test]
         public void IssuerShouldBeTheSameAsTheSubject()
         {
@@ -136,6 +143,7 @@ namespace MySSL.Tests
         [Test]
         public void SSLCertificateShouldHaveASetPrivateKey()
         {
+            Assert.That(_sslCert.PrivateKey != null);
             Assert.That(_sslCert.HasPrivateKey);
         }
     }

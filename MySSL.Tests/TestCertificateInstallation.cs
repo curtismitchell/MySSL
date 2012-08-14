@@ -21,6 +21,15 @@ namespace MySSL.Tests
             _authCert = new Mock<Authority>("TestAuthority");
         }
 
+        [TearDown]
+        public void AfterEachTest()
+        {
+            _mockPersonalStore = null;
+            _mockRootStore = null;
+            _certInstall = null;
+            _authCert = null;
+        }
+
         [Test]
         public void CertificateInstallationShouldSaveAuthorityToTrustedRoot()
         {
