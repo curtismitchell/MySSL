@@ -13,6 +13,7 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "CommonAssets", "CommonAssets", "{C146FE6F-A9D6-4803-AF0D-CD255AB97CE0}"
 	ProjectSection(SolutionItems) = preProject
 		CommonAssemblyInfo.cs = CommonAssemblyInfo.cs
+		README.md = README.md
 	EndProjectSection
 EndProject
 Global
