@@ -31,5 +31,13 @@ namespace MySSL
             Store.Close();
             return (foundCerts.Count == 0) ? null : foundCerts[0];
         }
+
+        public virtual X509Certificate2 FindByIssuer(string issuer)
+        {
+            Store.Open(OpenFlags.ReadOnly);
+            var foundCerts = Store.Certificates.Find(X509FindType.FindByIssuerName, issuer, false);
+            Store.Close();
+            return (foundCerts.Count == 0) ? null : foundCerts[0];
+        }
     }
 }

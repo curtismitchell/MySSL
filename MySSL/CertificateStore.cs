@@ -36,5 +36,14 @@ namespace MySSL
             _personalStore.Save(cert);
             return true;
         }
+
+        public void Remove(string issuer)
+        {
+            var cert = _personalStore.FindByIssuer(issuer);
+            _personalStore.Delete(cert);
+
+            cert = _rootStore.FindByIssuer(issuer);
+            _rootStore.Delete(cert);
+        }
     }
 }

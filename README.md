@@ -35,3 +35,10 @@ var certStore = new CertificateStore();
 certStore.SaveAuthority(authority);
 certStore.SaveSsl(sslCert);
 </pre>
+
+### Removing an Authority and SSL Certificate(s)
+
+<pre>
+var certStore = new CertificateStore();
+certStore.Remove("MyAuthority"); // MyAuthority is the name of the authority
+</pre>
