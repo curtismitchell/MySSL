@@ -15,7 +15,7 @@ namespace MySSL
     /// <summary>
     /// An Authority is a certificate that is trusted and authorized to issue certificates.
     /// </summary>
-    public class Authority
+    class Authority
     {
         const string SignatureAlgorithm = "SHA1WithRSAEncryption";
         const int BytesInKeyStrength = 1024;

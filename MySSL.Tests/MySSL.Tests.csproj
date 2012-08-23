@@ -49,8 +49,8 @@
     <Compile Include="..\CommonAssemblyInfo.cs">
       <Link>CommonAssemblyInfo.cs</Link>
     </Compile>
-    <Compile Include="TestAuthority.cs" />
-    <Compile Include="TestCertificateInstallation.cs" />
+    <Compile Include="CertificateAuthorityTests.cs" />
+    <Compile Include="CertificateStoreTests.cs" />
     <Compile Include="TestCommonName.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

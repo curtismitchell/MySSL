@@ -6,33 +6,35 @@ using System.Text;
 
 namespace MySSL
 {
-    public class CertificateStore : ICertificateStore
+    public class CertificateStore
     {
-        X509Store _xStore;
-        public CertificateStore(X509Store xStore)
+        private ICertificateStore _personalStore;
+        private ICertificateStore _rootStore;
+
+        public CertificateStore(ICertificateStore personalStore, ICertificateStore rootStore)
         {
-            _xStore = xStore;
+            _personalStore = personalStore;
+            _rootStore = rootStore;
         }
 
-        public void Save(X509Certificate2 certificate)
+        public bool SaveAuthority(X509Certificate2 authCert)
         {
-            _xStore.Open(OpenFlags.ReadWrite);
-            //_xStore.Add(certificate);
-            _xStore.Certificates.Import(certificate.RawData);
-            _xStore.Close();
+            // save cert to personalStore
+            _personalStore.Save(authCert);
+            // find cert in personalStore
+            var savedCert = _personalStore.Find(authCert.Thumbprint);
+            // save cert to authorityStore
+            _rootStore.Save(savedCert);
+            // remove cert from personalStore
+            _personalStore.Delete(savedCert);
+
+            return true;
         }
 
-        public void Delete(X509Certificate2 certificate)
+        public bool SaveSsl(X509Certificate2 cert)
         {
-            _xStore.Open(OpenFlags.ReadWrite);
-            _xStore.Remove(certificate);
-            _xStore.Close();
-        }
-
-        public X509Certificate2 Find(string thumbprint)
-        {
-            var foundCerts = _xStore.Certificates.Find(X509FindType.FindByThumbprint, thumbprint, false);
-            return (foundCerts.Count == 0) ? null : foundCerts[0];
+            _personalStore.Save(cert);
+            return true;
         }
     }
 }

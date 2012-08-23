@@ -25,13 +25,13 @@ var authority = new CertificateAuthority("MyAuthority").ToX509Certificate();
 2. Create an SSL certificate from the authority for localhost
 
 <pre>
-var sslCert = authority.CreateSSL(); 
+var sslCert = authority.CreateSsl(); 
 </pre>
 
 3. Install the certificates
 
 <pre>
-var certInstaller = new CertificateInstaller();
-certInstaller.InstallAuthority(authority);
-certInstaller.InstallSSLCertificate(sslCert);
+var certStore = new CertificateStore();
+certStore.SaveAuthority(authority);
+certStore.SaveSsl(sslCert);
 </pre>
