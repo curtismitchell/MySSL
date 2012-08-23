@@ -8,13 +8,18 @@ namespace MySSL
 {
     public class CertificateStore
     {
-        private ICertificateStore _personalStore;
-        private ICertificateStore _rootStore;
+        private readonly ICertificateStore _personalStore;
+        private readonly ICertificateStore _rootStore;
 
         public CertificateStore(ICertificateStore personalStore, ICertificateStore rootStore)
         {
             _personalStore = personalStore;
             _rootStore = rootStore;
+        }
+
+        public CertificateStore()
+            : this(new MyCertificateStore(), new RootCertificateStore())
+        {
         }
 
         public bool SaveAuthority(X509Certificate2 authCert)

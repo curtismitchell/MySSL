@@ -1,14 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Security.Cryptography.X509Certificates;
-using System.Text;
+﻿using System.Security.Cryptography.X509Certificates;
 
 namespace MySSL
 {
     public class CertificateAuthority
     {
-        Authority _auth;
+        readonly Authority _auth;
+
         public CertificateAuthority(string name)
         {
             _auth = new Authority(name);

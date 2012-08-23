@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using NUnit.Framework;
+﻿using NUnit.Framework;
 using Moq;
 
 namespace MySSL.Tests
@@ -39,7 +35,7 @@ namespace MySSL.Tests
         }
 
         [Test]
-        public void ShouldSaveTheSSLCertificate()
+        public void ShouldSaveTheSslCertificate()
         {
             var cert = _authority.CreateSsl();
             Assert.That(_certStore.SaveSsl(cert));
@@ -54,7 +50,6 @@ namespace MySSL.Tests
             _mockPersonalStore.Setup(x => x.FindByIssuer("MyAuthority")).Returns(cert);
             _mockRootStore.Setup(x => x.FindByIssuer("MyAuthority")).Returns(authCert);
 
-            var certStore = new CertificateStore(_mockPersonalStore.Object, _mockRootStore.Object);
             _certStore.Remove("MyAuthority");
 
             _mockPersonalStore.Verify(x => x.FindByIssuer("MyAuthority"));
