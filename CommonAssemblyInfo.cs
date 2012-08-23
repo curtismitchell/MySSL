@@ -3,8 +3,8 @@
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyCompany("LexisNexis")]
-[assembly: AssemblyCopyright("Copyright © LexisNexis 2012")]
+[assembly: AssemblyCompany("Curtis Mitchell")]
+[assembly: AssemblyCopyright("Copyright © Curtis Mitchell 2012")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 [assembly: AssemblyProduct("MySSL")]
